@@ -1,0 +1,50 @@
+*{
+    background-color: rgb(178, 214, 227);
+}
+
+.main-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+}
+.video-container{
+    width: 90%;
+    background-color: rgb(215, 215, 250);
+    display: flex;
+    flex-direction: row;
+    row-gap: 20px;
+}
+
+.chat-container{
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+    width: 50%;
+    max-height: 40em;
+
+}
+
+.all-chats{
+    width: 100%;
+    background-color: aliceblue;
+    padding: 10px;
+    max-height: 90%;
+    overflow: scroll;
+}
+
+.chats{
+    background-color: aliceblue;
+}
+
+#send-messege{
+    width: 100%;
+    min-height: 2em;
+    background-color: aliceblue;
+}
+#send-button{
+    width: 200px;
+    background-color: aliceblue;
+}
