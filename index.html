@@ -6,58 +6,55 @@
     <title>Meet App</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='styles.css'>
+
 </head>
 <body>
-    <div class="main-container">
-    <div class="video-container">
-        <video class="video-container" id="user-1" autoplay playsinline></video>
-        <video class="video-container" id="user-2" autoplay playsinline></video>
+    <div class="main-container " id="main-box">
+
+    <div class="connect-container" id="details">
+        <h1>WebRTC Meet</h1>
+        <div class="sample-video-container flexCol">
+            <video class="video-stream-container" id="sample-video" autoplay playsinline></video>
+           
+        </div>
+        <!-- <div id="video-options" class="flexCol">
+            <div class="icon-container"><img class="icon" src="video-camera.png" alt=""></div>
+        </div> -->
+       
+        <div class="flexRow">
+            <div id="offer-box" class="flexCol maxWidth">
+                <h2>Offer</h2>
+                <textarea id="offer-area" class="textBoxArea"></textarea>
+            <button id="create-offer">Create Offer</button>
+            </div>
+            <div id="answer-box" class="flexCol maxWidth">
+                <h2>Answer</h2>
+                <textarea id="answer-area" class="textBoxArea"></textarea>
+                <button id="create-answer">Create Answer</button>
+               
+            </div>
+        </div>
+        <div class="flexCol"> 
+            <button id="submit-answer">Submit Answer</button>
+        </div>
+        
+        
+        </br>
+        
+
+    </div>
+    
+    <div class="video-container flexCol" id="video-box">
+        <video class="video-stream-container" id="local" autoplay playsinline></video>
+        <video class="video-stream-container" id="remote" autoplay playsinline></video>
     </div>
    
-    <div class="chat-container">
-        <div class="all-chats">
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
-            <p class="chats">User1: Hello</p>
+    <div class="chat-container" id="chat-box">
+        <h2>Chats..</h2>
+        <div class="all-chats" id="all-chats-id">
+           
         </div>
-        <textarea id="send-messege"></textarea>
+        <textarea id="send-messege" class="chatBoxArea"></textarea>
         <button id="send-button">Send</button>
     </div>
     </div>
