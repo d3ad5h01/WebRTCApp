@@ -19,9 +19,14 @@
     width: 100%;
 }
 .video-container{
-    width: 100%;
+    width: 90vw;
     background-color:transparent;
     row-gap: 20px;
+}
+
+.video-stream-container{
+    border-radius: 3%;
+    object-fit: cover;
 }
 
 .chat-container{
@@ -31,21 +36,30 @@
     align-items: center;
     row-gap: 20px;
     width: 90vw;
-    max-height: 40em;
+    max-height: 80vh;
     border-radius: 2%;
 
 }
 
 .all-chats{
     width: 90%;
-    background-color: aliceblue;
-    padding: 10px;
-    max-height: 90%;
-    overflow: scroll;
+    background-color: transparent;
+    padding: 5px;
+    max-height: 30vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
 }
 
 .chats{
-    background-color: aliceblue;
+    /* background-color: rgb(106, 166, 219); */
+    background-color: rgb(106, 166, 219);
+    border-radius: 0%;
+    padding: 10px;
+    margin-bottom: 0px;
+    border-radius: 25px;
+
 }
 
 h2{
@@ -58,10 +72,7 @@ h2{
 }
 
 
-.video-stream-container{
-    border-radius: 5%;
-    max-height: 20em;
-}
+
 
 .icon{
     border-width: 30ch;
@@ -94,7 +105,7 @@ button{
   border: 1px solid rgba(27, 31, 35, 0.15);
   border-radius: 6px;
   box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-  color: #24292E;
+  color: #101113;
   cursor: pointer;
   font-family: "Segoe UI";
   font-size: 14px;
@@ -113,14 +124,15 @@ button{
 
 .textBoxArea{
     width: 90%;
-    height: 20em;
-    background-color: rgb(195, 195, 195);
+    height: 20vh;
+    background-color: rgb(255, 255, 255);
     border-radius: 2%;
+    resize: none;
 }
 
 .chatBoxArea{
     width: 90%;
-    height: 10vh;
+    height: 20vh;
     background-color: aliceblue;
     border-radius: 2%;
 }
