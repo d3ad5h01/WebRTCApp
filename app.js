@@ -1,23 +1,48 @@
 let connection = new RTCPeerConnection({
   iceServers: [
     {
-      urls: "stun:openrelay.metered.ca:80",
+      urls: ["stun:openrelay.metered.ca:80","stun.wwdl.net:3478","stun.xs4all.nl:3478","stun.xtratelecom.es:3478","stun.yesss.at:3478","stun.zadarma.com:3478","stun.zadv.com:3478","stun.zoiper.com:3478","stun1.faktortel.com.au:3478","stun1.l.google.com:19302","stun1.voiceeclipse.net:3478","stun2.l.google.com:19302","stun3.l.google.com:19302","stun4.l.google.com:19302"]
     },
-//     {
-//       urls: "turn:openrelay.metered.ca:80",
-//       username: "openrelayproject",
-//       credential: "openrelayproject",
-//     },
-//     {
-//       urls: "turn:openrelay.metered.ca:443",
-//       username: "openrelayproject",
-//       credential: "openrelayproject",
-//     },
-//     {
-//       urls: "turn:openrelay.metered.ca:443?transport=tcp",
-//       username: "openrelayproject",
-//       credential: "openrelayproject",
-//     },
+    {
+      urls: "turn:openrelay.metered.ca:80",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:openrelay.metered.ca:443",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:openrelay.metered.ca:443?transport=tcp",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+    url: 'turn:numb.viagenie.ca',
+    credential: 'muazkh',
+    username: 'webrtc@live.com'
+},
+{
+    url: 'turn:192.158.29.39:3478?transport=udp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+},
+{
+    url: 'turn:192.158.29.39:3478?transport=tcp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+},
+{
+    url: 'turn:turn.bistri.com:80',
+    credential: 'homeo',
+    username: 'homeo'
+ },
+ {
+    url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+    credential: 'webrtc',
+    username: 'webrtc'
+}
   ],
 });
 let localMediaStream;
