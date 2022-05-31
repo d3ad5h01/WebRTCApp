@@ -48,7 +48,7 @@
     max-height: 30vh;
     overflow-y: auto;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 2px;
 }
 

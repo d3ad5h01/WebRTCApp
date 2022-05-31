@@ -3,11 +3,11 @@ let connection = new RTCPeerConnection({
     {
       urls: ['stun:stun1.l.google.com:19302','stun:stun2.l.google.com:19302']
     },
-    // {
+    //  {
     //   urls: "turn:openrelay.metered.ca:80",
-    //   username: "openrelayproject",
-    //   credential: "openrelayproject",
-    // },
+    //   username: openrelayproject,
+    //   credential: "openrelayproject,
+    //  },
     // {
     //   urls: "turn:openrelay.metered.ca:443",
     //   username: "openrelayproject",
@@ -137,22 +137,23 @@ function addMessege(messege){
         chats.style.backgroundColor='aliceBlue';
     conversation.push(messege);
     
-    chats.innerHTML = ` <p class="chats">${messege}</p>` +chats.innerHTML ;
+    chats.innerHTML = chats.innerHTML +` <p class="chats">${messege}</p>` ;
+    updateScroll();
 }
 
 function onSend(){
     addMessege("Me: "+sendMessegeTextArea.value);
-    textChannelStream.send(sendMessegeTextArea.value);
+    //textChannelStream.send(sendMessegeTextArea.value);
     sendMessegeTextArea.value="";
     //document.activeElement.blur();
 
 }
 
 let submitAnswer = async () => {
-    let answer = JSON.parse(answerTextArea.value);
-    if (!connection.currentRemoteDescription){
-        connection.setRemoteDescription(answer);
-    } 
+    // let answer = JSON.parse(answerTextArea.value);
+    // if (!connection.currentRemoteDescription){
+    //     connection.setRemoteDescription(answer);
+    // } 
 
     startMeet();
 } 
@@ -191,7 +192,10 @@ function player(){
 }
 
 function updateScroll(){
-    sendMessegeTextArea.scrollTop+=10;
+    const chats = document.getElementById('all-chats-id');
+    console.log("running");
+    chats.scrollTop = chats.scrollHeight - chats.clientHeight;
+
 }
 
 createOfferButton.addEventListener('click', createOffer)
@@ -205,7 +209,6 @@ sendMessegeTextArea.onkeypress = (event)=> {
     if(event.keyCode==13){ event.preventDefault();
         onSend();}
 };
-setInterval(updateScroll,1000);
 
 setupConnection()
 
