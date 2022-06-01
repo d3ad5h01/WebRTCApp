@@ -180,6 +180,7 @@ function startWebRTC(isOfferer) {
     
     document.getElementById('add-ice').addEventListener('click',() =>{
         let messege = JSON.parse(document.getElementById('ice-area').value);
+        document.getElementById('ice-area').value = "";
         messege.forEach((item) =>{
             let candidate = JSON.parse(item);
             connection.addIceCandidate(
