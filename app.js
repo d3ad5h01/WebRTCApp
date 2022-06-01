@@ -12,57 +12,28 @@ let videoContainer = document.getElementById('video-box');
 
 let localVideo = document.getElementById('local');
 let remoteVideo = document.getElementById('remote');
-// let offerTextArea = document.getElementById('offer-area');
-// let answerTextArea = document.getElementById('answer-area');
-let createOfferButton = document.getElementById('create-offer');
-let createAnswerButton = document.getElementById('create-answer');
-let addAnswerButton = document.getElementById('add-answer');
-let submitAnswerButton = document.getElementById('submit-answer');
+let createOfferAnswerButton = document.getElementById('create-offer-answer');
 let sendMessegeButton = document.getElementById('send-button');
 let sendMessegeTextArea = document.getElementById('send-messege');
 let offerAnswerBox = document.getElementById('answer-offer-box');
+let submitButton = document.getElementById('submit');
 
 
-let offerTextArea = document.getElementById('offer-area');
-let answerTextArea = document.getElementById('answer-area');
+let offerAnswerTextArea = document.getElementById('offer-answer-area');
 
+let offer={description:"",candidate:""};
+let answer={description:"",candidate:""};;
 
 function onSuccess() {};
-function onError(error) {
-  console.error(error);
-};
+function onError(error) {console.error(error);};
+function str(obj){return JSON.stringify(obj);};
+function ustr(obj){return JSON.parse(obj);}
 
-function str(obj){
-    return JSON.stringify(obj);
-};
-  
 
 let setupConnection = async () => {
-    
-   initialCSS();
+    initialCSS();
     startWebRTC(false);
-//     const constraints = {
-//         'video': true,
-//         'audio': false
-//     }
-
-//     localMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-//     localVideo.srcObject = localMediaStream;
-//     document.getElementById('sample-video').srcObject = localMediaStream;
-//     remoteMediaStream = new MediaStream();
-//     remoteVideo.srcObject = remoteMediaStream;
-//     textChannelStream = connection.createDataChannel('dataChannel');
-    
-//     localMediaStream.getTracks().forEach(element => {
-//         connection.addTrack(element,localMediaStream);        
-//     });
-
-//     connection.ontrack = (event) => {
-//         event.streams[0].getTracks().forEach((event) => {
-//             remoteMediaStream.addTrack(event);
-//         });
-//     };
- }
+}
 
 
 function startWebRTC(isOfferer) {
@@ -118,7 +89,6 @@ function startWebRTC(isOfferer) {
      
     textChannelStream = connection.createDataChannel('dataChannel');
     
-    
     connection.ondatachannel= e => {
 
         const receiveChannel = e.channel;
@@ -132,17 +102,43 @@ function startWebRTC(isOfferer) {
         receiveChannel.onclose =e => console.log("Closed Text Channel.");
 
     }
+
+
     connection.onicecandidate = (event) => {
       if (event.candidate) {
+          console.log(str(event.candidate));
         exchange.push(str(event.candidate));
       }
     };
   
-    createOfferButton.addEventListener('click',() =>{
-        connection.createOffer().then(handleLocalDescription).catch(onError);
-        offerTextArea.value = str(connection.localDescription);
+    createOfferAnswerButton.addEventListener('click',() =>{
+        if(offerAnswerTextArea.value==''){
+            connection.createOffer().then(handleLocalDescription).catch(onError);
+            setTimeout(createIceOffer,1000);
+        }
+        else{
+            let message = JSON.parse(offerAnswerTextArea.value);
+            console.log(message);
+            if(ustr(message.description).type=='offer')
+            {
+                console.log('Submit offer type');
+                connection.setRemoteDescription(new RTCSessionDescription(ustr(message.description)), () => {
+                    connection.createAnswer().then(handleLocalDescription).then(addIce);
+                    setTimeout(createIceAnswer,1000);
+                });
+            }
+            else
+            {
+                console.log('sbmit answer type');
+                connection.setRemoteDescription(new RTCSessionDescription(ustr(message.description)), () => {
+                    addIce(message.candidates);
+                });
+
+            }
     }
-    );
+    });
+
+
   
     connection.ontrack = event => {
       const stream = event.streams[0];
@@ -161,78 +157,45 @@ function startWebRTC(isOfferer) {
       stream.getTracks().forEach(track => connection.addTrack(track, stream));
     }, onError);
   
-    createAnswerButton.addEventListener('click',() =>{
-        console.log('clicked create ans');
-      let message = JSON.parse(document.getElementById('offer-area').value);
-        connection.setRemoteDescription(new RTCSessionDescription(message), () => {
-            connection.createAnswer().then(handleLocalDescription).catch(onError);
-            answerTextArea.value = str(connection.localDescription);
-        }, onError);
-    
-    }
-    );
-
-    addAnswerButton.addEventListener('click',() =>{
-        console.log('clicked add ans');
-          let message = JSON.parse(document.getElementById('answer-area').value);
-            connection.setRemoteDescription(new RTCSessionDescription(message), () => {
-            }, onError);
-        }
-        );
-    
-    document.getElementById('add-ice').addEventListener('click',() =>{
-        console.log('clicked add ice');
-        let messege = JSON.parse(document.getElementById('ice-area').value);
-        document.getElementById('ice-area').value = "";
+    function addIce(candidates){
+        let messege = ustr(offerAnswerTextArea.value);
+        messege = ustr(messege.candidate);
+        //document.getElementById('ice-area').value = "";
         messege.forEach((item) =>{
             console.log(item);
             let candidate = JSON.parse(item);
             connection.addIceCandidate(
               new RTCIceCandidate(candidate), onSuccess, onError
             );
-        });    
-    }); 
-}
+        }); 
 
-function handleLocalDescription(description) {
-    connection.setLocalDescription(description);
-    
-    if(description.type==='offer'){
-        offerTextArea.value=JSON.stringify(description);
     }
-    else{
-        answerTextArea.value = JSON.stringify(description);
+
+
+    function createIceOffer(){
+        offer.candidate = str(exchange);
+        offerAnswerTextArea.value = str(offer);    
     }
+
+    function createIceAnswer(){
+        answer.candidate = str(exchange);
+        offerAnswerTextArea.value = str(answer);
+    }
+
+    function handleLocalDescription(description) {
+        console.log('handle local desc');
+        connection.setLocalDescription(description);
+        if(description.type==='offer'){
+            offer.description = str(description); 
+        }
+        else{
+            answer.description = str(description);
+        }
+        console.log('conpleted');
+    }
+
+
 }
-
-let btn = document.getElementById('create-ice');
-btn.addEventListener('click',()=>{
-  console.log(str(exchange))
-  let icearea = document.getElementById('ice-area');
-  icearea.value = str(exchange);
-});
-
-
-
-
-// let createOffer = async () => {
-//     console.log("Create Offer Triggered");
-//     const offerCreated = await connection.createOffer();
-//     await connection.setLocalDescription(offerCreated);
-//     offerTextArea.value = JSON.stringify(offerCreated);
-// }
-
-// let createAnswer = async () => {
-//     const offerReceived = JSON.parse(offerTextArea.value);
-//     connection.onicecandidate = async (event) => {
-//         if(event.candidate){
-//             answerTextArea.value = JSON.stringify(connection.localDescription)
-//         }
-//     };
-//     await connection.setRemoteDescription(offerReceived);
-//     let answerCreated = await connection.createAnswer();
-//     await connection.setLocalDescription(answerCreated);
-// }
 
 function addMessege(messege){
     const chats = document.getElementById('all-chats-id');
@@ -252,14 +215,6 @@ function onSend(){
 
 }
 
-// let submitAnswer = async () => {
-//     // let answer = JSON.parse(answerTextArea.value);
-//     // if (!connection.currentRemoteDescription){
-//     //     connection.setRemoteDescription(answer);
-//     // } 
-
-//     startMeet();
-// } 
 
 function startMeet(){
     hideDetails();
@@ -284,14 +239,6 @@ function hideDetails(){
     connectContainer.style.display = 'none';
 }
 
-// function pauser(){
-//     document.getElementById('sample-video').pause();
-// }
-
-// function player(){
-//     document.getElementById('sample-video').play();
-
-// }
 
 function updateScroll(){
     const chats = document.getElementById('all-chats-id');
@@ -300,12 +247,9 @@ function updateScroll(){
 
 }
 
-// createOfferButton.addEventListener('click', createOffer)
-// createAnswerButton.addEventListener('click', createAnswer)
-// submitAnswerButton.addEventListener('click', submitAnswer)
- sendMessegeButton.addEventListener('click', onSend);
- window.addEventListener('resize', handleResponsive , true);
-// //document.getElementById('pause').addEventListener('click',pauser);
+
+sendMessegeButton.addEventListener('click', onSend);
+window.addEventListener('resize', handleResponsive , true);
 sendMessegeTextArea.onkeypress = (event)=> {
      console.log(event.keyCode);
     if(event.keyCode==13){ event.preventDefault();
