@@ -1,54 +1,9 @@
-let connection = new RTCPeerConnection({
-  iceServers: [
-    {
-      urls: ['stun:stun1.l.google.com:19302','stun:stun2.l.google.com:19302']
-    },
-    //  {
-    //   urls: "turn:openrelay.metered.ca:80",
-    //   username: openrelayproject,
-    //   credential: "openrelayproject,
-    //  },
-    // {
-    //   urls: "turn:openrelay.metered.ca:443",
-    //   username: "openrelayproject",
-    //   credential: "openrelayproject",
-    // },
-    // {
-    //   urls: "turn:openrelay.metered.ca:443?transport=tcp",
-    //   username: "openrelayproject",
-    //   credential: "openrelayproject",
-    // },
-//     {
-//     url: 'turn:numb.viagenie.ca',
-//     credential: 'muazkh',
-//     username: 'webrtc@live.com'
-// },
-// {
-//     url: 'turn:192.158.29.39:3478?transport=udp',
-//     credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-//     username: '28224511:1379330808'
-// },
-// {
-//     url: 'turn:192.158.29.39:3478?transport=tcp',
-//     credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-//     username: '28224511:1379330808'
-// },
-// {
-//     url: 'turn:turn.bistri.com:80',
-//     credential: 'homeo',
-//     username: 'homeo'
-//  },
-//  {
-//     url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-//     credential: 'webrtc',
-//     username: 'webrtc'
-// }
-  ],
-});
+let connection;
 let localMediaStream;
 let remoteMediaStream;
 let textChannelStream;
 let conversation = [];
+let exchange=[];
 
 //
 let mainContainer = document.getElementById('main-box');
@@ -57,8 +12,8 @@ let videoContainer = document.getElementById('video-box');
 
 let localVideo = document.getElementById('local');
 let remoteVideo = document.getElementById('remote');
-let offerTextArea = document.getElementById('offer-area');
-let answerTextArea = document.getElementById('answer-area');
+// let offerTextArea = document.getElementById('offer-area');
+// let answerTextArea = document.getElementById('answer-area');
 let createOfferButton = document.getElementById('create-offer');
 let createAnswerButton = document.getElementById('create-answer');
 let submitAnswerButton = document.getElementById('submit-answer');
@@ -67,34 +22,172 @@ let sendMessegeTextArea = document.getElementById('send-messege');
 let offerAnswerBox = document.getElementById('answer-offer-box');
 
 
+let offerTextArea = document.getElementById('offer-area');
+let answerTextArea = document.getElementById('answer-area');
 
 
-let setupConnection = async () => {
-   
-    initialCSS();
+function onSuccess() {};
+function onError(error) {
+  console.error(error);
+};
 
-    const constraints = {
-        'video': true,
-        'audio': false
-    }
-
-    localMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-    localVideo.srcObject = localMediaStream;
-    document.getElementById('sample-video').srcObject = localMediaStream;
-    remoteMediaStream = new MediaStream();
-    remoteVideo.srcObject = remoteMediaStream;
-    textChannelStream = connection.createDataChannel('dataChannel');
+function str(obj){
+    return JSON.stringify(obj);
+};
+  
+startWebRTC(false);
+// let setupConnection = async () => {
     
-    localMediaStream.getTracks().forEach(element => {
-        connection.addTrack(element,localMediaStream);        
-    });
+//     initialCSS();
 
-    connection.ontrack = (event) => {
-        event.streams[0].getTracks().forEach((event) => {
-            remoteMediaStream.addTrack(event);
-        });
+//     const constraints = {
+//         'video': true,
+//         'audio': false
+//     }
+
+//     localMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+//     localVideo.srcObject = localMediaStream;
+//     document.getElementById('sample-video').srcObject = localMediaStream;
+//     remoteMediaStream = new MediaStream();
+//     remoteVideo.srcObject = remoteMediaStream;
+//     textChannelStream = connection.createDataChannel('dataChannel');
+    
+//     localMediaStream.getTracks().forEach(element => {
+//         connection.addTrack(element,localMediaStream);        
+//     });
+
+//     connection.ontrack = (event) => {
+//         event.streams[0].getTracks().forEach((event) => {
+//             remoteMediaStream.addTrack(event);
+//         });
+//     };
+// }
+
+
+function startWebRTC(isOfferer) {
+
+    console.log('Starting webrtc');
+    connection = new RTCPeerConnection({
+        iceServers: [
+          {
+              urls: 'stun:stun.l.google.com:19302'
+          },
+           {
+            urls: "turn:openrelay.metered.ca:80",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+           },
+          {
+            urls: "turn:openrelay.metered.ca:443",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:443?transport=tcp",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+          url: 'turn:numb.viagenie.ca',
+          credential: 'muazkh',
+          username: 'webrtc@live.com'
+      },
+      {
+          url: 'turn:192.158.29.39:3478?transport=udp',
+          credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+          username: '28224511:1379330808'
+      },
+      {
+          url: 'turn:192.158.29.39:3478?transport=tcp',
+          credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+          username: '28224511:1379330808'
+      },
+      {
+          url: 'turn:turn.bistri.com:80',
+          credential: 'homeo',
+          username: 'homeo'
+       },
+       {
+          url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+          credential: 'webrtc',
+          username: 'webrtc'
+      }
+        ],
+      });
+     textChannelStream = connection.createDataChannel('dataChannel');
+
+    connection.onicecandidate = (event) => {
+      if (event.candidate) {
+        exchange.push(str(event.candidate));
+      }
     };
+  
+    document.getElementById('offer-button').addEventListener('click',() =>{
+        connection.createOffer().then(handleLocalDescription).catch(onError);
+        offerTextArea.value = str(connection.localDescription);
+    }
+    );
+  
+    connection.ontrack = event => {
+      const stream = event.streams[0];
+      if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+        remoteVideo.srcObject = stream;
+      }
+    };
+  
+    navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true,
+    }).then(stream => {
+      localVideo.srcObject = stream;
+      stream.getTracks().forEach(track => connection.addTrack(track, stream));
+    }, onError);
+  
+    document.getElementById('create-answer-button').addEventListener('click',() =>{
+      let message = JSON.parse(document.getElementById('offer-area').value);
+        connection.setRemoteDescription(new RTCSessionDescription(message), () => {
+            connection.createAnswer().then(handleLocalDescription).catch(onError);
+            answerTextArea.value = str(connection.localDescription);
+        }, onError);
+    
+    }
+    );
+
+    document.getElementById('add-answer-button').addEventListener('click',() =>{
+          let message = JSON.parse(document.getElementById('answer-area').value);
+            connection.setRemoteDescription(new RTCSessionDescription(message), () => {
+            }, onError);
+        }
+        );
+    
+    document.getElementById('add-ice-button').addEventListener('click',() =>{
+        let messege = JSON.parse(document.getElementById('ice-area').value);
+        messege.forEach((item) =>{
+            let candidate = JSON.parse(item);
+            connection.addIceCandidate(
+              new RTCIceCandidate(candidate), onSuccess, onError
+            );
+        });    
+    }); 
 }
+
+function handleLocalDescription(description) {
+    connection.setLocalDescription(description);
+    
+    if(description.type==='offer'){
+        offerTextArea.value=JSON.stringify(description);
+    }
+    else{
+        answerTextArea.value = JSON.stringify(description);
+    }
+}
+
+let btn = document.getElementById('tmp');
+btn.addEventListener('click',()=>{
+  console.log(str(exchange))
+  let icearea = document.getElementById('ice-area');
+  icearea.value = str(exchange);
+});
 
 
 connection.ondatachannel= e => {
@@ -112,24 +205,24 @@ connection.ondatachannel= e => {
 }
 
 
-let createOffer = async () => {
-    console.log("Create Offer Triggered");
-    const offerCreated = await connection.createOffer();
-    await connection.setLocalDescription(offerCreated);
-    offerTextArea.value = JSON.stringify(offerCreated);
-}
+// let createOffer = async () => {
+//     console.log("Create Offer Triggered");
+//     const offerCreated = await connection.createOffer();
+//     await connection.setLocalDescription(offerCreated);
+//     offerTextArea.value = JSON.stringify(offerCreated);
+// }
 
-let createAnswer = async () => {
-    const offerReceived = JSON.parse(offerTextArea.value);
-    connection.onicecandidate = async (event) => {
-        if(event.candidate){
-            answerTextArea.value = JSON.stringify(connection.localDescription)
-        }
-    };
-    await connection.setRemoteDescription(offerReceived);
-    let answerCreated = await connection.createAnswer();
-    await connection.setLocalDescription(answerCreated);
-}
+// let createAnswer = async () => {
+//     const offerReceived = JSON.parse(offerTextArea.value);
+//     connection.onicecandidate = async (event) => {
+//         if(event.candidate){
+//             answerTextArea.value = JSON.stringify(connection.localDescription)
+//         }
+//     };
+//     await connection.setRemoteDescription(offerReceived);
+//     let answerCreated = await connection.createAnswer();
+//     await connection.setLocalDescription(answerCreated);
+// }
 
 function addMessege(messege){
     const chats = document.getElementById('all-chats-id');
@@ -143,53 +236,53 @@ function addMessege(messege){
 
 function onSend(){
     addMessege("Me: "+sendMessegeTextArea.value);
-    //textChannelStream.send(sendMessegeTextArea.value);
+    textChannelStream.send(sendMessegeTextArea.value);
     sendMessegeTextArea.value="";
-    //document.activeElement.blur();
+    document.activeElement.blur();
 
 }
 
-let submitAnswer = async () => {
-    // let answer = JSON.parse(answerTextArea.value);
-    // if (!connection.currentRemoteDescription){
-    //     connection.setRemoteDescription(answer);
-    // } 
+// let submitAnswer = async () => {
+//     // let answer = JSON.parse(answerTextArea.value);
+//     // if (!connection.currentRemoteDescription){
+//     //     connection.setRemoteDescription(answer);
+//     // } 
 
-    startMeet();
-} 
+//     startMeet();
+// } 
 
-function startMeet(){
-    hideDetails();
-    unhideVideo();
-    document.getElementsByTagName("BODY")[0].style.backgroundColor ='#121212';
+// function startMeet(){
+//     hideDetails();
+//     unhideVideo();
+//     document.getElementsByTagName("BODY")[0].style.backgroundColor ='#121212';
 
-}
+// }
 
-function initialCSS(){
+// function initialCSS(){
     
-    mainContainer.classList.add('flexCol');
-    document.getElementById('video-box').style.display='none';
-    document.getElementById('chat-box').style.display='none';
-    document.getElementsByTagName("BODY")[0].style.backgroundColor ='white';
-}
+//     mainContainer.classList.add('flexCol');
+//     document.getElementById('video-box').style.display='none';
+//     document.getElementById('chat-box').style.display='none';
+//     document.getElementsByTagName("BODY")[0].style.backgroundColor ='white';
+// }
 
-function unhideVideo(){
-    document.getElementById('video-box').style.display='flex';
-    document.getElementById('chat-box').style.display='flex';
-}
+// function unhideVideo(){
+//     document.getElementById('video-box').style.display='flex';
+//     document.getElementById('chat-box').style.display='flex';
+// }
 
-function hideDetails(){
-    connectContainer.style.display = 'none';
-}
+// function hideDetails(){
+//     connectContainer.style.display = 'none';
+// }
 
-function pauser(){
-    document.getElementById('sample-video').pause();
-}
+// function pauser(){
+//     document.getElementById('sample-video').pause();
+// }
 
-function player(){
-    document.getElementById('sample-video').play();
+// function player(){
+//     document.getElementById('sample-video').play();
 
-}
+// }
 
 function updateScroll(){
     const chats = document.getElementById('all-chats-id');
@@ -198,63 +291,63 @@ function updateScroll(){
 
 }
 
-createOfferButton.addEventListener('click', createOffer)
-createAnswerButton.addEventListener('click', createAnswer)
-submitAnswerButton.addEventListener('click', submitAnswer)
-sendMessegeButton.addEventListener('click', onSend);
-window.addEventListener('resize', handleResponsive , true);
-//document.getElementById('pause').addEventListener('click',pauser);
-sendMessegeTextArea.onkeypress = (event)=> {
-    console.log(event.keyCode);
-    if(event.keyCode==13){ event.preventDefault();
-        onSend();}
-};
+// createOfferButton.addEventListener('click', createOffer)
+// createAnswerButton.addEventListener('click', createAnswer)
+// submitAnswerButton.addEventListener('click', submitAnswer)
+// sendMessegeButton.addEventListener('click', onSend);
+// window.addEventListener('resize', handleResponsive , true);
+// //document.getElementById('pause').addEventListener('click',pauser);
+// sendMessegeTextArea.onkeypress = (event)=> {
+//     console.log(event.keyCode);
+//     if(event.keyCode==13){ event.preventDefault();
+//         onSend();}
+// };
 
-setupConnection()
+// setupConnection()
 
 
 
-// Responsive
+// // Responsive
 
-function isEllipsisActive(e) {
-    return (e.offsetWidth < e.scrollWidth);
-}
+// function isEllipsisActive(e) {
+//     return (e.offsetWidth < e.scrollWidth);
+// }
 
-function handleResponsive(event) {
-    console.log(window.innerHeight + " "+ window.innerWidth);
-    if(window.innerWidth<600)
-    {
-        handleResponsiveOverflow();  
-    }
-    else 
-    {
-        handleResponsiveUnderflow();
-    }
-}
+// function handleResponsive(event) {
+//     console.log(window.innerHeight + " "+ window.innerWidth);
+//     if(window.innerWidth<600)
+//     {
+//         handleResponsiveOverflow();  
+//     }
+//     else 
+//     {
+//         handleResponsiveUnderflow();
+//     }
+// }
 
-function  handleResponsiveOverflow(){
-    //offerAnswerBox.classList.pop();
-    console.log(offerAnswerBox.classList);
-    offerAnswerBox.classList.remove('flexRow');
-    offerAnswerBox.classList.add('flexCol');
-    videoContainer.classList.remove('flexRow');
-    videoContainer.classList.add('flexCol');
+// function  handleResponsiveOverflow(){
+//     //offerAnswerBox.classList.pop();
+//     console.log(offerAnswerBox.classList);
+//     offerAnswerBox.classList.remove('flexRow');
+//     offerAnswerBox.classList.add('flexCol');
+//     videoContainer.classList.remove('flexRow');
+//     videoContainer.classList.add('flexCol');
     
-    localVideo.style.height= "auto";
-    localVideo.style.width= "90vw";
-    remoteVideo.style.height = "auto";
-    remoteVideo.style.width = "90vw";
+//     localVideo.style.height= "auto";
+//     localVideo.style.width= "90vw";
+//     remoteVideo.style.height = "auto";
+//     remoteVideo.style.width = "90vw";
 
-}
+// }
 
-function  handleResponsiveUnderflow(){
-    offerAnswerBox.classList.remove('flexCol');
-    offerAnswerBox.classList.add('flexRow');
-    videoContainer.classList.add('flexRow');
-    videoContainer.classList.remove('flexCol');
+// function  handleResponsiveUnderflow(){
+//     offerAnswerBox.classList.remove('flexCol');
+//     offerAnswerBox.classList.add('flexRow');
+//     videoContainer.classList.add('flexRow');
+//     videoContainer.classList.remove('flexCol');
 
-    localVideo.style.height= "50vh";
-    localVideo.style.width= "45vw";
-    remoteVideo.style.height = "50vh";
-    remoteVideo.style.width = "45vw";
-}
+//     localVideo.style.height= "50vh";
+//     localVideo.style.width= "45vw";
+//     remoteVideo.style.height = "50vh";
+//     remoteVideo.style.width = "45vw";
+// }

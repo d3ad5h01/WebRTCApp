@@ -9,7 +9,7 @@
 
 </head>
 <body>
-    <div class="main-container " id="main-box">
+    <!-- <div class="main-container " id="main-box">
     
         <div class="connect-container" id="connect-box">
             <h1>WebRTC Meet</h1>
@@ -17,9 +17,7 @@
                 <video class="video-stream-container" id="sample-video" autoplay playsinline></video>
             
             </div>
-            <!-- <div id="video-options" class="flexCol">
-                <div class="icon-container"><img class="icon" src="video-camera.png" alt=""></div>
-            </div> -->
+           
             
             <div class="flexRow" id="answer-offer-box">
                 <div id="offer-box" class="flexCol maxWidth">
@@ -57,7 +55,34 @@
             <textarea id="send-messege" class="chatBoxArea"></textarea>
             <button id="send-button">Send</button>
         </div>
-    </div>
+    </div> -->
+<!-- </br>
+<video id="localVideo" autoplay muted></video>
+</br>
+<video id="remoteVideo" autoplay></video>. -->
+<div class="video-container" id="video-box">
+    <video class="video-stream-container" id="local" autoplay playsinline></video>
+    <video class="video-stream-container" id="remote" autoplay playsinline></video>
+</div>
+</br>
+<textarea id='offer-area' class="textBoxArea"></textarea>
+</br>
+<button id='offer-button'>Offer Create</button>
+</br>
+<h2>Answer area</h2>
+<textarea id="answer-area" class="textBoxArea"></textarea>
+</br>
+<button id='create-answer-button'>Create Answer</button>
+</br>
+<button id='add-answer-button'>add Answer</button>
+
+</br>
+<h2>Ice area</h2>
+<textarea id="ice-area" class="textBoxArea"></textarea>
+</br>
+<button id='add-ice-button'>Add ice </button>
+</br>
+<button id="tmp">TMPPP</button>
 </body>
 <script src='app.js'></script>
 </html>
