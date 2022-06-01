@@ -16,6 +16,7 @@ let remoteVideo = document.getElementById('remote');
 // let answerTextArea = document.getElementById('answer-area');
 let createOfferButton = document.getElementById('create-offer');
 let createAnswerButton = document.getElementById('create-answer');
+let addAnswerButton = document.getElementById('add-answer');
 let submitAnswerButton = document.getElementById('submit-answer');
 let sendMessegeButton = document.getElementById('send-button');
 let sendMessegeTextArea = document.getElementById('send-messege');
@@ -35,11 +36,11 @@ function str(obj){
     return JSON.stringify(obj);
 };
   
-startWebRTC(false);
-// let setupConnection = async () => {
-    
-//     initialCSS();
 
+let setupConnection = async () => {
+    
+   initialCSS();
+    startWebRTC(false);
 //     const constraints = {
 //         'video': true,
 //         'audio': false
@@ -61,7 +62,7 @@ startWebRTC(false);
 //             remoteMediaStream.addTrack(event);
 //         });
 //     };
-// }
+ }
 
 
 function startWebRTC(isOfferer) {
@@ -114,15 +115,30 @@ function startWebRTC(isOfferer) {
       }
         ],
       });
-     textChannelStream = connection.createDataChannel('dataChannel');
+     
+    textChannelStream = connection.createDataChannel('dataChannel');
+    
+    
+    connection.ondatachannel= e => {
 
+        const receiveChannel = e.channel;
+        receiveChannel.onmessage =e => {
+            addMessege("Sender : "+e.data);
+        } 
+        receiveChannel.onopen = e => {
+            console.log("Open Text Channnel.");
+            startMeet();
+        }
+        receiveChannel.onclose =e => console.log("Closed Text Channel.");
+
+    }
     connection.onicecandidate = (event) => {
       if (event.candidate) {
         exchange.push(str(event.candidate));
       }
     };
   
-    document.getElementById('offer-button').addEventListener('click',() =>{
+    createOfferButton.addEventListener('click',() =>{
         connection.createOffer().then(handleLocalDescription).catch(onError);
         offerTextArea.value = str(connection.localDescription);
     }
@@ -140,10 +156,12 @@ function startWebRTC(isOfferer) {
       video: true,
     }).then(stream => {
       localVideo.srcObject = stream;
+      document.getElementById('sample-video').srcObject = stream;
+
       stream.getTracks().forEach(track => connection.addTrack(track, stream));
     }, onError);
   
-    document.getElementById('create-answer-button').addEventListener('click',() =>{
+    createAnswerButton.addEventListener('click',() =>{
       let message = JSON.parse(document.getElementById('offer-area').value);
         connection.setRemoteDescription(new RTCSessionDescription(message), () => {
             connection.createAnswer().then(handleLocalDescription).catch(onError);
@@ -153,14 +171,14 @@ function startWebRTC(isOfferer) {
     }
     );
 
-    document.getElementById('add-answer-button').addEventListener('click',() =>{
+    addAnswerButton.addEventListener('click',() =>{
           let message = JSON.parse(document.getElementById('answer-area').value);
             connection.setRemoteDescription(new RTCSessionDescription(message), () => {
             }, onError);
         }
         );
     
-    document.getElementById('add-ice-button').addEventListener('click',() =>{
+    document.getElementById('add-ice').addEventListener('click',() =>{
         let messege = JSON.parse(document.getElementById('ice-area').value);
         messege.forEach((item) =>{
             let candidate = JSON.parse(item);
@@ -182,7 +200,7 @@ function handleLocalDescription(description) {
     }
 }
 
-let btn = document.getElementById('tmp');
+let btn = document.getElementById('create-ice');
 btn.addEventListener('click',()=>{
   console.log(str(exchange))
   let icearea = document.getElementById('ice-area');
@@ -190,19 +208,6 @@ btn.addEventListener('click',()=>{
 });
 
 
-connection.ondatachannel= e => {
-
-    const receiveChannel = e.channel;
-    receiveChannel.onmessage =e => {
-        addMessege("Sender : "+e.data);
-    } 
-    receiveChannel.onopen = e => {
-        console.log("Open Text Channnel.");
-        startMeet();
-    }
-    receiveChannel.onclose =e => console.log("Closed Text Channel.");
-
-}
 
 
 // let createOffer = async () => {
@@ -251,29 +256,28 @@ function onSend(){
 //     startMeet();
 // } 
 
-// function startMeet(){
-//     hideDetails();
-//     unhideVideo();
-//     document.getElementsByTagName("BODY")[0].style.backgroundColor ='#121212';
+function startMeet(){
+    hideDetails();
+    unhideVideo();
+    document.getElementsByTagName("BODY")[0].style.backgroundColor ='#121212';
+}
 
-// }
-
-// function initialCSS(){
+function initialCSS(){
     
-//     mainContainer.classList.add('flexCol');
-//     document.getElementById('video-box').style.display='none';
-//     document.getElementById('chat-box').style.display='none';
-//     document.getElementsByTagName("BODY")[0].style.backgroundColor ='white';
-// }
+    mainContainer.classList.add('flexCol');
+    document.getElementById('video-box').style.display='none';
+    document.getElementById('chat-box').style.display='none';
+    document.getElementsByTagName("BODY")[0].style.backgroundColor ='white';
+}
 
-// function unhideVideo(){
-//     document.getElementById('video-box').style.display='flex';
-//     document.getElementById('chat-box').style.display='flex';
-// }
+function unhideVideo(){
+    document.getElementById('video-box').style.display='flex';
+    document.getElementById('chat-box').style.display='flex';
+}
 
-// function hideDetails(){
-//     connectContainer.style.display = 'none';
-// }
+function hideDetails(){
+    connectContainer.style.display = 'none';
+}
 
 // function pauser(){
 //     document.getElementById('sample-video').pause();
@@ -294,60 +298,60 @@ function updateScroll(){
 // createOfferButton.addEventListener('click', createOffer)
 // createAnswerButton.addEventListener('click', createAnswer)
 // submitAnswerButton.addEventListener('click', submitAnswer)
-// sendMessegeButton.addEventListener('click', onSend);
-// window.addEventListener('resize', handleResponsive , true);
+ sendMessegeButton.addEventListener('click', onSend);
+ window.addEventListener('resize', handleResponsive , true);
 // //document.getElementById('pause').addEventListener('click',pauser);
-// sendMessegeTextArea.onkeypress = (event)=> {
-//     console.log(event.keyCode);
-//     if(event.keyCode==13){ event.preventDefault();
-//         onSend();}
-// };
+sendMessegeTextArea.onkeypress = (event)=> {
+     console.log(event.keyCode);
+    if(event.keyCode==13){ event.preventDefault();
+        onSend();}
+};
 
-// setupConnection()
+setupConnection()
 
 
 
 // // Responsive
 
-// function isEllipsisActive(e) {
-//     return (e.offsetWidth < e.scrollWidth);
-// }
+function isEllipsisActive(e) {
+    return (e.offsetWidth < e.scrollWidth);
+}
 
-// function handleResponsive(event) {
-//     console.log(window.innerHeight + " "+ window.innerWidth);
-//     if(window.innerWidth<600)
-//     {
-//         handleResponsiveOverflow();  
-//     }
-//     else 
-//     {
-//         handleResponsiveUnderflow();
-//     }
-// }
+function handleResponsive(event) {
+    console.log(window.innerHeight + " "+ window.innerWidth);
+    if(window.innerWidth<600)
+    {
+        handleResponsiveOverflow();  
+    }
+    else 
+    {
+        handleResponsiveUnderflow();
+    }
+}
 
-// function  handleResponsiveOverflow(){
-//     //offerAnswerBox.classList.pop();
-//     console.log(offerAnswerBox.classList);
-//     offerAnswerBox.classList.remove('flexRow');
-//     offerAnswerBox.classList.add('flexCol');
-//     videoContainer.classList.remove('flexRow');
-//     videoContainer.classList.add('flexCol');
+function  handleResponsiveOverflow(){
+    //offerAnswerBox.classList.pop();
+    console.log(offerAnswerBox.classList);
+    offerAnswerBox.classList.remove('flexRow');
+    offerAnswerBox.classList.add('flexCol');
+    videoContainer.classList.remove('flexRow');
+    videoContainer.classList.add('flexCol');
     
-//     localVideo.style.height= "auto";
-//     localVideo.style.width= "90vw";
-//     remoteVideo.style.height = "auto";
-//     remoteVideo.style.width = "90vw";
+    localVideo.style.height= "auto";
+    localVideo.style.width= "90vw";
+    remoteVideo.style.height = "auto";
+    remoteVideo.style.width = "90vw";
 
-// }
+}
 
-// function  handleResponsiveUnderflow(){
-//     offerAnswerBox.classList.remove('flexCol');
-//     offerAnswerBox.classList.add('flexRow');
-//     videoContainer.classList.add('flexRow');
-//     videoContainer.classList.remove('flexCol');
+function  handleResponsiveUnderflow(){
+    offerAnswerBox.classList.remove('flexCol');
+    offerAnswerBox.classList.add('flexRow');
+    videoContainer.classList.add('flexRow');
+    videoContainer.classList.remove('flexCol');
 
-//     localVideo.style.height= "50vh";
-//     localVideo.style.width= "45vw";
-//     remoteVideo.style.height = "50vh";
-//     remoteVideo.style.width = "45vw";
-// }
+    localVideo.style.height= "50vh";
+    localVideo.style.width= "45vw";
+    remoteVideo.style.height = "50vh";
+    remoteVideo.style.width = "45vw";
+}
