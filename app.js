@@ -162,6 +162,7 @@ function startWebRTC(isOfferer) {
     }, onError);
   
     createAnswerButton.addEventListener('click',() =>{
+        console.log('clicked create ans');
       let message = JSON.parse(document.getElementById('offer-area').value);
         connection.setRemoteDescription(new RTCSessionDescription(message), () => {
             connection.createAnswer().then(handleLocalDescription).catch(onError);
@@ -172,6 +173,7 @@ function startWebRTC(isOfferer) {
     );
 
     addAnswerButton.addEventListener('click',() =>{
+        console.log('clicked add ans');
           let message = JSON.parse(document.getElementById('answer-area').value);
             connection.setRemoteDescription(new RTCSessionDescription(message), () => {
             }, onError);
@@ -179,9 +181,11 @@ function startWebRTC(isOfferer) {
         );
     
     document.getElementById('add-ice').addEventListener('click',() =>{
+        console.log('clicked add ice');
         let messege = JSON.parse(document.getElementById('ice-area').value);
         document.getElementById('ice-area').value = "";
         messege.forEach((item) =>{
+            console.log(item);
             let candidate = JSON.parse(item);
             connection.addIceCandidate(
               new RTCIceCandidate(candidate), onSuccess, onError
