@@ -4,6 +4,20 @@
     font-family: "Segoe UI";
     
 }
+.heading{
+    width: 100%;
+    background-color: #303030;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+h1{
+    font-family: sans-serif;
+    font-style: italic;
+    color: 	#B8B8B8;
+}
 
 .main-container{
     display: flex;
@@ -30,20 +44,20 @@
 }
 
 .chat-container{
-    background-color: white;
+    background-color: 	#181818;
     display: flex;
     flex-direction: column;
     align-items: center;
     row-gap: 20px;
     width: 90vw;
     max-height: 80vh;
-    border-radius: 2%;
+    border-radius: 10px;
 
 }
 
 .all-chats{
     width: 90%;
-    background-color: transparent;
+    background-color: 	#181818;
     padding: 5px;
     max-height: 30vh;
     overflow-y: auto;
@@ -54,12 +68,23 @@
 
 .chats{
     /* background-color: rgb(106, 166, 219); */
-    background-color: rgb(106, 166, 219);
-    border-radius: 0%;
+    background-color: #080808;
     padding: 10px;
     margin-bottom: 0px;
-    border-radius: 25px;
+    border-radius: 5px;
+    color: #FAFBFC;
+    max-width: 70%;
+    overflow-wrap: break-word;
 
+
+}
+
+.sender{
+    align-self: flex-start;
+}
+
+.me{
+    align-self: flex-end;
 }
 
 h2{
@@ -126,15 +151,16 @@ button{
     width: 90%;
     height: 20vh;
     background-color: rgb(255, 255, 255);
-    border-radius: 2%;
+    border-radius: 5px;
     resize: none;
 }
 
 .chatBoxArea{
     width: 90%;
     height: 20vh;
-    background-color: aliceblue;
-    border-radius: 2%;
+    background-color: #303030;
+    border-radius: 0px;
+    color: #FAFBFC;
 }
 
 .maxWidth{
@@ -143,6 +169,17 @@ button{
 #sample-video{
 
     height: 20em;
-    border-radius: 5%;
+    border-radius: 10px;
 }
 
+#end-button{
+    background-color: darkred;
+}
+
+h5{
+    color: #FAFBFC;
+    font-size: x-large;
+    font-style: oblique;
+    margin: 4px;
+
+}

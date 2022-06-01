@@ -12,13 +12,16 @@
     <div class="main-container " id="main-box">
     
         <div class="connect-container" id="connect-box">
-            <h1>WebRTC Meet</h1>
+            <div class="heading">
+                <h1>WebRTC Meet</h1>
+            </div>
+            
             <div class="sample-video-container flexCol">
                 <video class="video-stream-container" id="sample-video" autoplay playsinline></video>
             </div>        
             <div class="flexRow" id="answer-offer-box">
                 <div id="offer-box" class="flexCol maxWidth">
-                    <h2>Paste Key</h2>
+                    <h1>Paste Key</h1>
                     <textarea id="offer-answer-area" class="textBoxArea"></textarea>
                     <button id="create-offer-answer">Create Offer / Answer</button>
                 </div>
@@ -52,12 +55,16 @@
         </div>
     
         <div class="chat-container" id="chat-box">
-            Chats
+            <h5>Chats</h5>
             <div class="all-chats" id="all-chats-id">
             
             </div>
             <textarea id="send-messege" class="chatBoxArea"></textarea>
-            <button id="send-button">Send</button>
+            <div class="flexRow">
+                <button id="send-button">Send</button>
+                <button id="end-button" onclick="window.location.reload()">End Call</button>
+            </div>
+            
         </div>
     </div>
 <!-- </br>

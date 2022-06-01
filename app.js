@@ -93,7 +93,7 @@ function startWebRTC(isOfferer) {
 
         const receiveChannel = e.channel;
         receiveChannel.onmessage =e => {
-            addMessege("Sender : "+e.data);
+            addMessege(2,"Sender : "+e.data);
         } 
         receiveChannel.onopen = e => {
             console.log("Open Text Channnel.");
@@ -197,18 +197,21 @@ function startWebRTC(isOfferer) {
 
 }
 
-function addMessege(messege){
+function addMessege(a,messege){
     const chats = document.getElementById('all-chats-id');
     if(conversation.length==0)
-        chats.style.backgroundColor='aliceBlue';
+        chats.style.backgroundColor='transparent';
     conversation.push(messege);
-    
-    chats.innerHTML = chats.innerHTML +` <p class="chats">${messege}</p>` ;
+    if(a==1)
+        chats.innerHTML = chats.innerHTML +` <p class="chats me" id = 'chatid${conversation.length}'>${messege}</p>` ;
+    else
+        chats.innerHTML = chats.innerHTML +` <p class="chats sender" id = 'chatid${conversation.length}'>${messege}</p>` ;
+
     updateScroll();
 }
 
 function onSend(){
-    addMessege("Me: "+sendMessegeTextArea.value);
+    addMessege(1,"Me: "+sendMessegeTextArea.value);
     textChannelStream.send(sendMessegeTextArea.value);
     sendMessegeTextArea.value="";
     document.activeElement.blur();
@@ -227,7 +230,7 @@ function initialCSS(){
     mainContainer.classList.add('flexCol');
     document.getElementById('video-box').style.display='none';
     document.getElementById('chat-box').style.display='none';
-    document.getElementsByTagName("BODY")[0].style.backgroundColor ='white';
+    document.getElementsByTagName("BODY")[0].style.backgroundColor ='#202020';
 }
 
 function unhideVideo(){
@@ -265,6 +268,8 @@ setupConnection()
 function isEllipsisActive(e) {
     return (e.offsetWidth < e.scrollWidth);
 }
+
+
 
 function handleResponsive(event) {
     console.log(window.innerHeight + " "+ window.innerWidth);
